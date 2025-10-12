@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        run: echo "Checked out code"
+      -  run: echo "Checked out code"
       - name: npm install
         uses: actions/setup-node@v3
         with:
