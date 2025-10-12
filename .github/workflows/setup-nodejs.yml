@@ -16,3 +16,18 @@ jobs:
         with:
           node-version: '20'
       - run: npm version
+  
+  Java-install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - run: echo " Checkout code"
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - run: java -version
+      - run: javac -version
+      - run: echo "Java setup completed"
