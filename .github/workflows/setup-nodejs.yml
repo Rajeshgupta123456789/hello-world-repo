@@ -1,19 +1,16 @@
 name: npm-install
 
 on:
-  push
+  workflow_dispatch # allows manual triggering of the workflow
 jobs:
   npm-install:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      -  run: echo "Checked out code"
-      - name: npm install
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      - run: npm version
-      - run: echo "NPM installation completed"
-      - run: npm ci
-      - run: npm test
+    - name: Install NPM
+    - uses: actions/checkout@v5
+    - uses: actions/setup-node@v5
+      with:
+       node-version: 20
+       cache: 'npm'
+    - run: npm ci
+    - run: npm test
