@@ -6,11 +6,9 @@ jobs:
   npm-install:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      -  run: echo "Checked out code"
-      - name: npm install
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      - run: npm version
+     - uses: actions/checkout@v5
+     - uses: actions/setup-node@v5
+       with:
+         node-version: 20
+     - run: npm ci
+     - run: npm test
