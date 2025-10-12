@@ -1,13 +1,17 @@
-name: Setup NodeJS
+name: npm-install
 
-on: 
-  workflow_dispatch:
-
+on:
+  push
 jobs:
-  nodejs-job:
+  npm-install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 22
-    - run: npm version
+      - name: checkout
+        uses: actions/checkout@v4
+        run: echo "Checked out code"
+      - name: npm install
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - run: npm install
+      - run: npm version
