@@ -1,12 +1,18 @@
 name: npm-install
 
 on:
-  push
+  push:
+    branches:
+      - main
 jobs:
   npm-install:
     runs-on: ubuntu-latest
     steps:
-     - uses: actions/checkout@v5
-     - uses: actions/setup-node@v5
-       with:
-         node-version: 20
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - run: echo " Checkout code"
+      - name: Set up Node.js
+        uses: actions/setup-node@v3 
+        with:
+          node-version: '20'
+      - run: npm version
