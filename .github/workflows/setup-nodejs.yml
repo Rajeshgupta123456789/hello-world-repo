@@ -14,3 +14,6 @@ jobs:
         with:
           node-version: '20'
       - run: npm version
+      - run: echo "NPM installation completed"
+      - run: npm ci
+      - run: npm test
