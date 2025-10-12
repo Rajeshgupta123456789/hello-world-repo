@@ -9,9 +9,9 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+   hello-job:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Echo text
-        run: echo "Hello, world!"
+        run: 'echo "Hello, world!"'
