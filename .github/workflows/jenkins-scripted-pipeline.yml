@@ -8,14 +8,14 @@ jobs:
   Greet:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Hello, World!" 
+      - run: echo "Hello, World this is Ankit !" 
   
   Build:
     runs-on: ubuntu-latest
     steps:
       - run: |-
            echo 'Pretending to build...'
-           sleep 5  # Simulate work
+           sleep 10  # Simulate work
 
   Results:
     runs-on: ubuntu-latest
