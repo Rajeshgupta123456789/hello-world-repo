@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  detect-and-test:
+    name: Detect project type and run tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect project types
+        id: detect
+        run: |
+          echo "node=false" >> $GITHUB_OUTPUT
+          echo "python=false" >> $GITHUB_OUTPUT
+          echo "maven=false" >> $GITHUB_OUTPUT
+          if [ -f package.json ]; then echo "node=true" >> $GITHUB_OUTPUT; fi
+          if [ -f requirements.txt ] || [ -f setup.py ] || [ -f pyproject.toml ]; then echo "python=true" >> $GITHUB_OUTPUT; fi
+          if [ -f pom.xml ]; then echo "maven=true" >> $GITHUB_OUTPUT; fi
+
+      - name: Setup Node.js
+        if: ${{ steps.detect.outputs.node == 'true' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install & test (Node.js)
+        if: ${{ steps.detect.outputs.node == 'true' }}
+        run: |
+          npm ci
+          # run npm test only if a test script is present
+          node -e "process.exit((require('./package.json').scripts && require('./package.json').scripts.test) ? 0 : 1)" && npm test || echo "No npm test script found, skipping npm test"
+
+      - name: Setup Python
+        if: ${{ steps.detect.outputs.python == 'true' }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install & test (Python)
+        if: ${{ steps.detect.outputs.python == 'true' }}
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f pyproject.toml ]; then pip install . || true; fi
+          if [ -f setup.py ]; then pip install -e . || true; fi
+          # run pytest only if there are tests
+          if ls tests 2>/dev/null || git ls-files '*test_*.py' | grep -q .; then
+            pytest -q
+          else
+            echo "No python tests found, skipping pytest"
+          fi
+
+      - name: Setup Java (Maven)
+        if: ${{ steps.detect.outputs.maven == 'true' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build & test (Maven)
+        if: ${{ steps.detect.outputs.maven == 'true' }}
+        run: |
+          mvn -B -V -e test
